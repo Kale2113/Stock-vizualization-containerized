@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stock Data Visualizer</title>
+</head>
+<body>
+  <main>
+    <h1>Stock Data Visualizer</h1>
+    <p class="intro">Pick an S&amp;P 500 stock, a chart style and a date range to see its closing prices.</p>
+
+    <form method="post" action="{{ url_for('index') }}">
+      <div class="field wide">
+        <label for="symbol">Stock symbol</label>
+        <select id="symbol" name="symbol" required>
+          <option value="" disabled {{ 'selected' if not form.symbol }}>Choose a stock</option>
+          {% for symbol, name in symbols %}
+            <option value="{{ symbol }}" {{ 'selected' if symbol == form.symbol.upper() }}>
+              {{ symbol }}{% if name %} – {{ name }}{% endif %}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="chart_type">Chart type</label>
+        <select id="chart_type" name="chart_type" required>
+          {% for value, label in chart_types.items() %}
+            <option value="{{ value }}" {{ 'selected' if value == form.chart_type }}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="time_series">Time series</label>
+        <select id="time_series" name="time_series" required>
+          {% for value, label in time_series.items() %}
+            <option value="{{ value }}" {{ 'selected' if value == form.time_series }}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="start_date">Start date</label>
+        <input type="date" id="start_date" name="start_date" value="{{ form.start_date }}" required>
+      </div>
+
+      <div class="field">
+        <label for="end_date">End date</label>
+        <input type="date" id="end_date" name="end_date" value="{{ form.end_date }}" required>
+      </div>
+
+      <button type="submit">Generate chart</button>
+    </form>
+
+    {% if symbols_warning %}
+      <p class="notice">{{ symbols_warning }}</p>
+    {% endif %}
+
+    {% if error %}
+      <p class="error" role="alert">{{ error }}</p>
+    {% endif %}
+
+    {% if chart_html %}
+      <section class="chart" aria-label="Stock chart">
+        {{ chart_html | safe }}
+      </section>
+    {% endif %}
+  </main>
+</body>
+</html>

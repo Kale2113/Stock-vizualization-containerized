@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  web:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: stock-data-visualization
+    container_name: stock-data-visualization
+    ports:
+      - "5005:5000"
+    volumes:
+      - .:/app
+    environment:
+      FLASK_DEBUG: "1"
